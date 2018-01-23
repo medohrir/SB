@@ -86,7 +86,9 @@
     <Compile Include="Example\ConsoleWriter.cs" />
     <Compile Include="Example\MultiPong.cs" />
     <Compile Include="Example\MultiPing.cs" />
+    <Compile Include="Example\MyComplexeResponse.cs" />
     <Compile Include="Example\MyQuestion.cs" />
+    <Compile Include="Example\MyComplexeQuestionHandler.cs" />
     <Compile Include="Example\MyQuestionHandler.cs" />
     <Compile Include="Example\Ping.cs" />
     <Compile Include="Example\Pong.cs" />

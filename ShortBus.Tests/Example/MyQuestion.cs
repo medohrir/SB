@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShortBus.Tests.Example
 {
-    public class MyQuestion:IRequest<string>
+    public class MyQuestion<T>:IRequest<T>
     {
     }
 }

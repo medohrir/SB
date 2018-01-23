@@ -21,13 +21,14 @@ namespace ShortBus.Tests.Example
             _kernel.Bind<IRequestHandler<PrintText, UnitType>>().To<ConsoleWriter>();
             //_kernel.Bind<IRequest<string>>().To<Ping>();
             _kernel.Bind<IRequestHandler<Ping, string>>().To<Pong>();
-            _kernel.Bind<IRequestHandler<MyQuestion, string>>().To<MyQuestionHandler>();
+            _kernel.Bind<IRequestHandler<MyQuestion<string>, string>>().To<MyQuestionHandler>();
+            _kernel.Bind<IRequestHandler<MyQuestion<MyComplexeResponse>, MyComplexeResponse>>().To<MyComplexeQuestionHandler>();
             var resolver = _kernel.Get<IDependencyResolver>();
             ShortBus.DependencyResolver.SetResolver(resolver);
         }
 
         [Test]
-        public void RequestResponse()
+        public void ResponseToRequest()
         {
             var query = new Ping();
 
@@ -40,9 +41,9 @@ namespace ShortBus.Tests.Example
         }
 
         [Test]
-        public void MyQuestionMyResponse()
+        public void MyResponseToMyQuestion()
         {
-            var myQuestion = new MyQuestion();
+            var myQuestion = new MyQuestion<string>();
 
             var mediator = _kernel.Get<IMediator>();
 
@@ -51,7 +52,19 @@ namespace ShortBus.Tests.Example
             Assert.That(myResponse.Data, Is.EqualTo("This the response corresponding to MyQuestion"));
             Assert.That(myResponse.HasException(), Is.False);
         }
+        [Test]
+        public void MyComplexeResponseToMyQuestion()
+        {
+            var myQuestion = new MyQuestion<MyComplexeResponse>();
 
+            var mediator = _kernel.Get<IMediator>();
+
+            var myResponse = mediator.Request(myQuestion);
+
+            Assert.That(myResponse.Data.Info1, Is.EqualTo("info1"));
+            Assert.That(myResponse.Data.Info2, Is.EqualTo("info2"));
+            Assert.That(myResponse.HasException(), Is.False);
+        }
 
 
         //[Test]

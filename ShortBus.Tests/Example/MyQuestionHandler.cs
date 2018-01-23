@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ShortBus.Tests.Example
 {
-    public class MyQuestionHandler : IRequestHandler<MyQuestion, string>
+    public class MyQuestionHandler : IRequestHandler<MyQuestion<string>, string>
     {
-        public string Handle(MyQuestion request)
+        public string Handle(MyQuestion<string> request)
         {
             return "This the response corresponding to MyQuestion";
         }
