@@ -21,6 +21,7 @@ namespace ShortBus.Tests.Example
             _kernel.Bind<IRequestHandler<PrintText, UnitType>>().To<ConsoleWriter>();
             //_kernel.Bind<IRequest<string>>().To<Ping>();
             _kernel.Bind<IRequestHandler<Ping, string>>().To<Pong>();
+            _kernel.Bind<IRequestHandler<PingALing, string>>().To<Pong>();
             _kernel.Bind<IRequestHandler<MyQuestion<string>, string>>().To<MyQuestionHandler>();
             _kernel.Bind<IRequestHandler<MyQuestion<MyComplexeResponse>, MyComplexeResponse>>().To<MyComplexeQuestionHandler>();
 
@@ -85,18 +86,18 @@ namespace ShortBus.Tests.Example
             Assert.That(pong.HasException(), Is.False);
         }
 
-        //[Test]
-        //public void RequestResponse_variant()
-        //{
-        //    var query = new PingALing();
+        [Test]
+        public void RequestResponse_variant()
+        {
+            var query = new PingALing();
 
-        //    var mediator = ObjectFactory.GetInstance<IMediator>();
+            var mediator = _kernel.Get<IMediator>();
 
-        //    var pong = mediator.Request(query);
+            var pong = mediator.Request(query);
 
-        //    Assert.That(pong.Data, Is.EqualTo("PONG!"));
-        //    Assert.That(pong.HasException(), Is.False);
-        //}
+            Assert.That(pong.Data, Is.EqualTo("PONG!"));
+            Assert.That(pong.HasException(), Is.False);
+        }
 
         //[Test]
         //public void RequestResponseImplementationWithMultipleHandler_variant()
