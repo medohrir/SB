@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using Ninject;
 using NUnit.Framework;
-using ShortBus.StructureMap;
+using ShortBus.Ninject;
+using ShortBus.Tests.Containers;
 using StructureMap;
 
 namespace ShortBus.Tests.Example
@@ -9,23 +11,19 @@ namespace ShortBus.Tests.Example
     [TestFixture]
     public class BasicExample
     {
+        private IKernel _kernel;
         public BasicExample()
         {
-            ObjectFactory.Initialize(i =>
-            {
-                i.Scan(s =>
-                {
-                    s.AssemblyContainingType<IMediator>();
-                    s.TheCallingAssembly();
-                    s.WithDefaultConventions();
-                    s.AddAllTypesOf((typeof(IRequestHandler<,>)));
-                    s.AddAllTypesOf(typeof(INotificationHandler<>));
-                });
-
-                i.For<IDependencyResolver>().Use(() => DependencyResolver.Current);
-            });
-
-            ShortBus.DependencyResolver.SetResolver(new StructureMapDependencyResolver(ObjectFactory.Container));
+            _kernel = new StandardKernel();
+            //kernel.Bind<IKernel>().To<StandardKernel>().InSingletonScope();
+            _kernel.Bind<IMediator>().To<Mediator>().InSingletonScope();
+            _kernel.Bind<IDependencyResolver>().To<NinjectDependencyResolver>();
+            _kernel.Bind<IRequestHandler<PrintText, UnitType>>().To<ConsoleWriter>();
+            //_kernel.Bind<IRequest<string>>().To<Ping>();
+            _kernel.Bind<IRequestHandler<Ping, string>>().To<Pong>();
+            _kernel.Bind<IRequestHandler<MyQuestion, string>>().To<MyQuestionHandler>();
+            var resolver = _kernel.Get<IDependencyResolver>();
+            ShortBus.DependencyResolver.SetResolver(resolver);
         }
 
         [Test]
@@ -33,7 +31,7 @@ namespace ShortBus.Tests.Example
         {
             var query = new Ping();
 
-            var mediator = ObjectFactory.GetInstance<IMediator>();
+            var mediator = _kernel.Get<IMediator>();
 
             var pong = mediator.Request(query);
 
@@ -42,102 +40,117 @@ namespace ShortBus.Tests.Example
         }
 
         [Test]
-        public void RequestResponseImplementationWithMultipleHandler()
+        public void MyQuestionMyResponse()
         {
-            var query = new TriplePing();
+            var myQuestion = new MyQuestion();
 
-            var mediator = ObjectFactory.GetInstance<IMediator>();
+            var mediator = _kernel.Get<IMediator>();
 
-            var pong = mediator.Request(query);
+            var myResponse = mediator.Request(myQuestion);
 
-            Assert.That(pong.Data, Is.EqualTo("PONG! PONG! PONG!"));
-            Assert.That(pong.HasException(), Is.False);
+            Assert.That(myResponse.Data, Is.EqualTo("This the response corresponding to MyQuestion"));
+            Assert.That(myResponse.HasException(), Is.False);
         }
 
-        [Test]
-        public void RequestResponse_variant()
-        {
-            var query = new PingALing();
 
-            var mediator = ObjectFactory.GetInstance<IMediator>();
 
-            var pong = mediator.Request(query);
+        //[Test]
+        //public void RequestResponseImplementationWithMultipleHandler()
+        //{
+        //    var query = new TriplePing();
 
-            Assert.That(pong.Data, Is.EqualTo("PONG!"));
-            Assert.That(pong.HasException(), Is.False);
-        }
+        //    var mediator = ObjectFactory.GetInstance<IMediator>();
 
-        [Test]
-        public void RequestResponseImplementationWithMultipleHandler_variant()
-        {
-            var query = new DoublePingALing();
+        //    var pong = mediator.Request(query);
 
-            var mediator = ObjectFactory.GetInstance<IMediator>();
+        //    Assert.That(pong.Data, Is.EqualTo("PONG! PONG! PONG!"));
+        //    Assert.That(pong.HasException(), Is.False);
+        //}
 
-            var pong = mediator.Request(query);
+        //[Test]
+        //public void RequestResponse_variant()
+        //{
+        //    var query = new PingALing();
 
-            Assert.That(pong.Data, Is.EqualTo("PONG! PONG!"));
-            Assert.That(pong.HasException(), Is.False);
-        }
+        //    var mediator = ObjectFactory.GetInstance<IMediator>();
 
-        [Test]
-        public void Send_void()
-        {
-            var command = new PrintText
-            {
-                Format = "This is a {0} message",
-                Args = new object[] { "text" }
-            };
+        //    var pong = mediator.Request(query);
 
-            var mediator = ObjectFactory.GetInstance<IMediator>();
+        //    Assert.That(pong.Data, Is.EqualTo("PONG!"));
+        //    Assert.That(pong.HasException(), Is.False);
+        //}
 
-            var response = mediator.Request(command);
+        //[Test]
+        //public void RequestResponseImplementationWithMultipleHandler_variant()
+        //{
+        //    var query = new DoublePingALing();
 
-            Assert.That(response.HasException(), Is.False, response.Exception == null ? string.Empty : response.Exception.ToString());
-        }
+        //    var mediator = ObjectFactory.GetInstance<IMediator>();
 
-        [Test]
-        public void Send_void_variant()
-        {
-            var command = new PrintTextSpecial
-            {
-                Format = "This is a {0} message",
-                Args = new object[] { "text" }
-            };
+        //    var pong = mediator.Request(query);
 
-            var mediator = ObjectFactory.GetInstance<IMediator>();
+        //    Assert.That(pong.Data, Is.EqualTo("PONG! PONG!"));
+        //    Assert.That(pong.HasException(), Is.False);
+        //}
 
-            var response = mediator.Request(command);
+        //[Test]
+        //public void Send_void()
+        //{
+        //    var command = new PrintText
+        //    {
+        //        Format = "This is a {0} message",
+        //        Args = new object[] { "text" }
+        //    };
 
-            Assert.That(response.HasException(), Is.False);
-        }
+        //    var mediator = ObjectFactory.GetInstance<IMediator>();
 
-        [Test]
-        public void Send_result()
-        {
-            var command = new CommandWithResult();
+        //    var response = mediator.Request(command);
 
-            var mediator = new Mediator(DependencyResolver.Current);
+        //    Assert.That(response.HasException(), Is.False, response.Exception == null ? string.Empty : response.Exception.ToString());
+        //}
 
-            var response = mediator.Request(command);
+        //[Test]
+        //public void Send_void_variant()
+        //{
+        //    var command = new PrintTextSpecial
+        //    {
+        //        Format = "This is a {0} message",
+        //        Args = new object[] { "text" }
+        //    };
 
-            Assert.That(response.Data, Is.EqualTo("foo"));
-        }
+        //    var mediator = ObjectFactory.GetInstance<IMediator>();
 
-        [Test, Explicit]
-        public void Perf()
-        {
-            var mediator = ObjectFactory.GetInstance<IMediator>();
-            var query = new Ping();
+        //    var response = mediator.Request(command);
 
-            var watch = Stopwatch.StartNew();
+        //    Assert.That(response.HasException(), Is.False);
+        //}
 
-            for (int i = 0; i < 10000; i++)
-                mediator.Request(query);
+        //[Test]
+        //public void Send_result()
+        //{
+        //    var command = new CommandWithResult();
 
-            watch.Stop();
+        //    var mediator = new Mediator(DependencyResolver.Current);
 
-            Console.WriteLine(watch.Elapsed);
-        }
+        //    var response = mediator.Request(command);
+
+        //    Assert.That(response.Data, Is.EqualTo("foo"));
+        //}
+
+        //[Test, Explicit]
+        //public void Perf()
+        //{
+        //    var mediator = ObjectFactory.GetInstance<IMediator>();
+        //    var query = new Ping();
+
+        //    var watch = Stopwatch.StartNew();
+
+        //    for (int i = 0; i < 10000; i++)
+        //        mediator.Request(query);
+
+        //    watch.Stop();
+
+        //    Console.WriteLine(watch.Elapsed);
+        //}
     }
 }

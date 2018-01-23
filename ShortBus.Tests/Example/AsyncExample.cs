@@ -1,102 +1,102 @@
-﻿namespace ShortBus.Tests.Example
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using global::StructureMap;
-    using NUnit.Framework;
-    using StructureMap;
+﻿//namespace ShortBus.Tests.Example
+//{
+//    using System.Collections;
+//    using System.Collections.Generic;
+//    using System.Threading.Tasks;
+//    using global::StructureMap;
+//    using NUnit.Framework;
+//    using StructureMap;
 
-    [TestFixture]
-    public class AsyncExample
-    {
-        [Test]
-        public void Notification()
-        {
-            var handled = new List<int>();
+//    [TestFixture]
+//    public class AsyncExample
+//    {
+//        [Test]
+//        public void Notification()
+//        {
+//            var handled = new List<int>();
 
-            ObjectFactory.Initialize(i =>
-            {
-                i.Scan(s =>
-                {
-                    s.TheCallingAssembly();
-                    s.AddAllTypesOf(( typeof (INotificationHandler<>) ));
-                });
-                i.For<IList>().Use(handled);
-            });
+//            ObjectFactory.Initialize(i =>
+//            {
+//                i.Scan(s =>
+//                {
+//                    s.TheCallingAssembly();
+//                    s.AddAllTypesOf((typeof(INotificationHandler<>)));
+//                });
+//                i.For<IList>().Use(handled);
+//            });
 
-            var resolver = new StructureMapDependencyResolver(ObjectFactory.Container);
+//            var resolver = new StructureMapDependencyResolver(ObjectFactory.Container);
 
-            var notification = new Notification();
+//            var notification = new Notification();
 
-            var mediator = new Mediator(resolver);
+//            var mediator = new Mediator(resolver);
 
-            mediator.Notify(notification);
+//            mediator.Notify(notification);
 
-            CollectionAssert.AreEquivalent(handled, new[]{1,2});
-        }
+//            CollectionAssert.AreEquivalent(handled, new[] { 1, 2 });
+//        }
 
-        [Test]
-        public void RequestResponse()
-        {
-            ObjectFactory.Initialize(i => i.Scan(s =>
-            {
-                s.TheCallingAssembly();
-                s.AddAllTypesOf(( typeof (IAsyncRequestHandler<,>) ));
-            }));
+//        [Test]
+//        public void RequestResponse()
+//        {
+//            ObjectFactory.Initialize(i => i.Scan(s =>
+//            {
+//                s.TheCallingAssembly();
+//                s.AddAllTypesOf((typeof(IAsyncRequestHandler<,>)));
+//            }));
 
-            var resolver = new StructureMapDependencyResolver(ObjectFactory.Container);
+//            var resolver = new StructureMapDependencyResolver(ObjectFactory.Container);
 
-            var query = new ExternalResourceQuery();
+//            var query = new ExternalResourceQuery();
 
-            var mediator = new Mediator(resolver);
+//            var mediator = new Mediator(resolver);
 
-            var task = mediator.RequestAsync(query);
+//            var task = mediator.RequestAsync(query);
 
-            Assert.That(task.Result.Data, Is.EqualTo("success"));
-            Assert.That(task.Result.HasException(), Is.False);
-        }
-    }
+//            Assert.That(task.Result.Data, Is.EqualTo("success"));
+//            Assert.That(task.Result.HasException(), Is.False);
+//        }
+//    }
 
-    public class ExternalResourceQuery : IAsyncRequest<string> { }
+//    public class ExternalResourceQuery : IAsyncRequest<string> { }
 
-    public class ExternalResourceHandler : IAsyncRequestHandler<ExternalResourceQuery, string>
-    {
-        public Task<string> HandleAsync(ExternalResourceQuery request)
-        {
-            return Task.FromResult("success");
-        }
-    }
+//    public class ExternalResourceHandler : IAsyncRequestHandler<ExternalResourceQuery, string>
+//    {
+//        public Task<string> HandleAsync(ExternalResourceQuery request)
+//        {
+//            return Task.FromResult("success");
+//        }
+//    }
 
-    public class Notification { }
+//    public class Notification { }
 
-    public class NotificationHandler1 : INotificationHandler<Notification>
-    {
-        readonly IList _list;
+//    public class NotificationHandler1 : INotificationHandler<Notification>
+//    {
+//        readonly IList _list;
 
-        public NotificationHandler1(IList list)
-        {
-            _list = list;
-        }
+//        public NotificationHandler1(IList list)
+//        {
+//            _list = list;
+//        }
 
-        public void Handle(Notification notification)
-        {
-            _list.Add(1);
-        }
-    }
+//        public void Handle(Notification notification)
+//        {
+//            _list.Add(1);
+//        }
+//    }
 
-    public class NotificationHandler2 : INotificationHandler<Notification>
-    {
-        readonly IList _list;
+//    public class NotificationHandler2 : INotificationHandler<Notification>
+//    {
+//        readonly IList _list;
 
-        public NotificationHandler2(IList list)
-        {
-            _list = list;
-        }
+//        public NotificationHandler2(IList list)
+//        {
+//            _list = list;
+//        }
 
-        public void Handle(Notification notification)
-        {
-            _list.Add(2);
-        }
-    }
-}
+//        public void Handle(Notification notification)
+//        {
+//            _list.Add(2);
+//        }
+//    }
+//}

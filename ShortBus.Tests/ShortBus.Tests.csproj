@@ -86,6 +86,8 @@
     <Compile Include="Example\ConsoleWriter.cs" />
     <Compile Include="Example\MultiPong.cs" />
     <Compile Include="Example\MultiPing.cs" />
+    <Compile Include="Example\MyQuestion.cs" />
+    <Compile Include="Example\MyQuestionHandler.cs" />
     <Compile Include="Example\Ping.cs" />
     <Compile Include="Example\Pong.cs" />
     <Compile Include="Example\PrintText.cs" />
@@ -96,10 +98,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\ShortBus.Autofac\ShortBus.Autofac.csproj">
-      <Project>{0A3CE491-085A-460C-BEE8-D577DFB0244D}</Project>
-      <Name>ShortBus.Autofac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ShortBus.Markers\ShortBus.Markers.csproj">
       <Project>{9ABBD382-F93A-49A9-B3C7-8D8AEB5E458D}</Project>
       <Name>ShortBus.Markers</Name>
@@ -107,22 +105,6 @@
     <ProjectReference Include="..\ShortBus.Ninject\ShortBus.Ninject.csproj">
       <Project>{26835F98-3898-4467-9999-2FC2DFC50370}</Project>
       <Name>ShortBus.Ninject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ShortBus.SimpleInjector\ShortBus.SimpleInjector.csproj">
-      <Project>{7D808989-F544-475E-B120-1600A384DFA3}</Project>
-      <Name>ShortBus.SimpleInjector</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ShortBus.StructureMap\ShortBus.StructureMap.csproj">
-      <Project>{8250FBB2-1372-4F46-916A-00F094B04F37}</Project>
-      <Name>ShortBus.StructureMap</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ShortBus.Unity\ShortBus.Unity.csproj">
-      <Project>{E86D92BC-A5E4-4704-99DB-BBFA42A3C975}</Project>
-      <Name>ShortBus.Unity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ShortBus.Windsor\ShortBus.Windsor.csproj">
-      <Project>{126A6105-8F0E-4489-A75B-69958A00D570}</Project>
-      <Name>ShortBus.Windsor</Name>
     </ProjectReference>
     <ProjectReference Include="..\ShortBus\ShortBus.csproj">
       <Project>{50078B66-DBAC-4273-8DD0-970176B2FE2B}</Project>
