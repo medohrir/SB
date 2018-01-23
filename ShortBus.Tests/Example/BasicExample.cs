@@ -24,7 +24,7 @@ namespace ShortBus.Tests.Example
             _kernel.Bind<IRequestHandler<PingALing, string>>().To<Pong>();
             _kernel.Bind<IRequestHandler<MyQuestion<string>, string>>().To<MyQuestionHandler>();
             _kernel.Bind<IRequestHandler<MyQuestion<MyComplexeResponse>, MyComplexeResponse>>().To<MyComplexeQuestionHandler>();
-
+            _kernel.Bind<IRequestHandler<DoublePingALing,string>>().To<MultiPong>();
 
 
             _kernel.Bind<IRequestHandler<DoublePing, string>, IRequestHandler<TriplePing, string>>().To<MultiPong>();
@@ -99,18 +99,18 @@ namespace ShortBus.Tests.Example
             Assert.That(pong.HasException(), Is.False);
         }
 
-        //[Test]
-        //public void RequestResponseImplementationWithMultipleHandler_variant()
-        //{
-        //    var query = new DoublePingALing();
+        [Test]
+        public void RequestResponseImplementationWithMultipleHandler_variant()
+        {
+            var query = new DoublePingALing();
 
-        //    var mediator = ObjectFactory.GetInstance<IMediator>();
+            var mediator = _kernel.Get<IMediator>();
 
-        //    var pong = mediator.Request(query);
+            var pong = mediator.Request(query);
 
-        //    Assert.That(pong.Data, Is.EqualTo("PONG! PONG!"));
-        //    Assert.That(pong.HasException(), Is.False);
-        //}
+            Assert.That(pong.Data, Is.EqualTo("PONG! PONG!"));
+            Assert.That(pong.HasException(), Is.False);
+        }
 
         //[Test]
         //public void Send_void()
